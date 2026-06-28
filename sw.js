@@ -1,4 +1,4 @@
-const CACHE = 'obarai-hr-v1';
+const CACHE = 'obarai-hr-v2';
 const ASSETS = [
   '/',
   '/index.html',
