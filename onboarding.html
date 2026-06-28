@@ -59,6 +59,19 @@
   .btn-outline:hover{background:#f3f4f6}
   .actions{display:flex;gap:12px;margin-top:24px}
 
+  /* PIN Lock */
+  .lock-overlay{position:fixed;inset:0;background:var(--primary);z-index:1000;display:flex;align-items:center;justify-content:center}
+  .lock-box{background:var(--card);border-radius:16px;padding:48px 40px;text-align:center;max-width:380px;width:90%}
+  .lock-box h2{font-size:20px;margin-bottom:8px}
+  .lock-box p{font-size:13px;color:var(--text-light);margin-bottom:24px}
+  .lock-box .pin-input{width:100%;padding:14px;font-size:24px;text-align:center;letter-spacing:12px;border:2px solid var(--border);border-radius:10px;outline:none;font-family:monospace;transition:border-color .2s}
+  .lock-box .pin-input:focus{border-color:var(--accent)}
+  .lock-box .pin-input.error{border-color:var(--red);animation:shake .4s}
+  .lock-box .pin-btn{margin-top:16px;width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:background .2s}
+  .lock-box .pin-btn:hover{background:#1f2937}
+  .lock-hint{font-size:12px;color:var(--text-light);margin-top:12px}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+
   .toast{position:fixed;top:20px;right:20px;background:var(--green);color:#fff;padding:14px 24px;border-radius:8px;font-size:14px;font-weight:600;z-index:999;transform:translateX(120%);transition:transform .3s}
   .toast.show{transform:translateX(0)}
   .toast.error{background:var(--red)}
@@ -73,6 +86,17 @@
 </style>
 </head>
 <body>
+
+<!-- PIN Lock Screen -->
+<div class="lock-overlay" id="lock-screen">
+  <div class="lock-box">
+    <h2>🔒 主管驗證</h2>
+    <p>本頁面包含員工薪資等機密資料，<br>請輸入主管 PIN 碼以繼續。</p>
+    <input type="password" class="pin-input" id="pin-input" maxlength="8" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkPin()">
+    <button class="pin-btn" onclick="checkPin()">驗證</button>
+    <div class="lock-hint">如不知道 PIN 碼，請聯繫人事主管</div>
+  </div>
+</div>
 
 <div class="header">
   <div><h1>OBARAI INTELLIGENCE</h1><div class="sub">員工入職報到基本資料</div></div>
@@ -273,6 +297,29 @@
 </div>
 
 <script>
+const PIN_HASH = '61210989';
+const PIN_SESSION_KEY = 'obarai_pin_ok';
+
+function checkPin() {
+  const input = document.getElementById('pin-input');
+  if (input.value === PIN_HASH) {
+    document.getElementById('lock-screen').style.display = 'none';
+    sessionStorage.setItem(PIN_SESSION_KEY, '1');
+  } else {
+    input.classList.add('error');
+    input.value = '';
+    setTimeout(() => input.classList.remove('error'), 500);
+  }
+}
+
+(function() {
+  if (sessionStorage.getItem(PIN_SESSION_KEY) === '1') {
+    document.getElementById('lock-screen').style.display = 'none';
+  } else {
+    document.getElementById('pin-input').focus();
+  }
+})();
+
 const GAS_KEY = 'obarai_gas_url';
 let gasUrl = localStorage.getItem(GAS_KEY) || 'https://script.google.com/macros/s/AKfycbwurdEwtQMWAcgtnFj5nJ8U19z3uE4TnbIqXs1rMLxvQqXV7y65oBXPZ7RSh-V1pqzt/exec';
 const uploadedFiles = { diploma: [], cert: [], bankbook: [] };
