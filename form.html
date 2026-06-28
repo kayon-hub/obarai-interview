@@ -5,78 +5,79 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OBARAI INTELLIGENCE - 人員面試表</title>
 <style>
-  :root { --primary:#0a0a0a; --accent:#2563eb; --accent-light:#3b82f6; --green:#22c55e; --yellow:#eab308; --red:#ef4444; --bg:#fafafa; --card:#fff; --border:#e5e7eb; --text:#1f2937; --text-light:#6b7280; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  :root { --primary:#0a0a0a; --accent:#2563eb; --accent-light:#3b82f6; --green:#16a34a; --yellow:#ca8a04; --red:#dc2626; --bg:#f8f9fa; --card:#fff; --border:#e5e7eb; --text:#111827; --text-light:#6b7280; }
   *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
-  .header{background:var(--primary);color:#fff;padding:24px 32px;display:flex;align-items:center;justify-content:space-between}
-  .header h1{font-size:20px;font-weight:700;letter-spacing:2px}
-  .header .sub{font-size:13px;color:#9ca3af;margin-top:2px}
-  .nav{display:flex;gap:12px;align-items:center}
-  .nav a{color:#9ca3af;text-decoration:none;font-size:13px;padding:6px 12px;border-radius:6px;transition:all .15s}
-  .nav a:hover{color:#fff;background:rgba(255,255,255,.1)}
-  .container{max-width:800px;margin:0 auto;padding:32px 20px 80px}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:20px}
-  .card h2{font-size:16px;font-weight:700;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid var(--primary);display:flex;align-items:center;gap:8px}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+
+  .header{background:var(--primary);color:#fff;padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between}
+  .header-brand{display:flex;align-items:baseline;gap:12px}
+  .header-brand .co{font-size:9px;letter-spacing:3px;color:#6b7280;text-transform:uppercase}
+  .header-brand .name{font-size:18px;font-weight:800;letter-spacing:2px}
+  .header-brand .dot{color:var(--accent)}
+  .header-brand .page{font-size:12px;color:#9ca3af;margin-left:8px;padding-left:12px;border-left:1px solid #374151}
+  .nav{display:flex;gap:4px;align-items:center}
+  .nav a{color:#9ca3af;text-decoration:none;font-size:12px;padding:6px 14px;border-radius:6px;transition:all .15s;font-weight:500;letter-spacing:.3px}
+  .nav a:hover{color:#fff;background:rgba(255,255,255,.08)}
+
+  .container{max-width:780px;margin:0 auto;padding:32px 20px 80px}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:28px;margin-bottom:16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .card h2{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-light);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
   .row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px}
   .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:14px}
   .full{margin-bottom:14px}
   .fg{display:flex;flex-direction:column;gap:4px}
-  .fg label{font-size:13px;font-weight:600;color:var(--text-light)}
-  .fg input,.fg select,.fg textarea{padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;outline:none;transition:border-color .2s}
-  .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--accent)}
+  .fg label{font-size:12px;font-weight:600;color:var(--text-light);letter-spacing:.3px}
+  .fg input,.fg select,.fg textarea{padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;outline:none;transition:all .15s;background:#fff}
+  .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.08)}
   .fg textarea{resize:vertical;min-height:80px}
   .required::after{content:" *";color:var(--red)}
 
-  /* 2-inch photo */
   .photo-section{display:flex;gap:24px;align-items:flex-start;margin-bottom:20px}
-  .photo-frame{width:132px;height:170px;border:2px dashed var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:pointer;overflow:hidden;position:relative;flex-shrink:0;background:#f9fafb;transition:border-color .2s}
-  .photo-frame:hover{border-color:var(--accent)}
+  .photo-frame{width:132px;height:170px;border:2px dashed var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:pointer;overflow:hidden;position:relative;flex-shrink:0;background:#fafafa;transition:all .2s}
+  .photo-frame:hover{border-color:var(--accent);background:#f0f4ff}
   .photo-frame img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0}
-  .photo-frame .placeholder{text-align:center;font-size:12px;color:var(--text-light);padding:8px}
-  .photo-frame .placeholder .icon{font-size:32px;margin-bottom:4px}
-  .photo-size-note{font-size:11px;color:var(--text-light);background:#f9fafb;padding:8px 12px;border-radius:6px;margin-top:8px}
+  .photo-frame .placeholder{text-align:center;font-size:11px;color:var(--text-light);padding:12px;line-height:1.6}
+  .photo-frame .placeholder svg{display:block;margin:0 auto 8px;opacity:.4}
+  .photo-size-note{font-size:10px;color:var(--text-light);background:#f9fafb;padding:8px 10px;border-radius:4px;margin-top:8px;line-height:1.6;border:1px solid #f3f4f6}
   .photo-info{flex:1}
 
-  /* Experience rows */
-  .exp-block{border:1px solid #f3f4f6;border-radius:8px;padding:16px;margin-bottom:12px;position:relative}
-  .exp-block .remove-btn{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--red);cursor:pointer;font-size:18px;line-height:1}
-  .add-btn{background:none;border:1px dashed var(--border);border-radius:8px;padding:10px;width:100%;cursor:pointer;color:var(--text-light);font-size:13px;transition:all .15s}
+  .exp-block{border:1px solid #f3f4f6;border-radius:8px;padding:16px;margin-bottom:12px;position:relative;background:#fafafa}
+  .exp-block .remove-btn{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--text-light);cursor:pointer;font-size:18px;line-height:1;transition:color .15s}
+  .exp-block .remove-btn:hover{color:var(--red)}
+  .add-btn{background:none;border:1px dashed var(--border);border-radius:6px;padding:10px;width:100%;cursor:pointer;color:var(--text-light);font-size:12px;font-weight:600;letter-spacing:.5px;transition:all .15s}
   .add-btn:hover{border-color:var(--accent);color:var(--accent)}
 
-  /* Evaluation */
-  .eval-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-  .eval-label{width:100px;font-size:13px;font-weight:600;flex-shrink:0}
-  .stars{display:flex;gap:4px}
-  .star{width:28px;height:28px;border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;transition:all .15s;background:var(--card)}
-  .star.active{background:#fef3c7;border-color:#eab308;color:#b45309}
-  .star:hover{border-color:#eab308}
+  .eval-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+  .eval-label{width:100px;font-size:12px;font-weight:600;color:var(--text-light);flex-shrink:0}
+  .stars{display:flex;gap:3px}
+  .star{width:28px;height:28px;border:1px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;font-weight:600;transition:all .12s;background:#fff;color:var(--text-light)}
+  .star.active{background:var(--primary);border-color:var(--primary);color:#fff}
+  .star:hover{border-color:var(--primary)}
 
   .result-tags{display:flex;gap:8px;margin-top:16px}
-  .result-tag{padding:8px 20px;border:2px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;transition:all .15s}
-  .result-tag:hover{border-color:var(--accent)}
-  .result-tag.selected-green{border-color:var(--green);background:#dcfce7;color:#166534}
-  .result-tag.selected-yellow{border-color:var(--yellow);background:#fef9c3;color:#854d0e}
-  .result-tag.selected-red{border-color:var(--red);background:#fee2e2;color:#991b1b}
+  .result-tag{padding:8px 24px;border:1.5px solid var(--border);border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;transition:all .15s}
+  .result-tag:hover{border-color:var(--text-light)}
+  .result-tag.selected-green{border-color:var(--green);background:#f0fdf4;color:var(--green)}
+  .result-tag.selected-yellow{border-color:var(--yellow);background:#fefce8;color:var(--yellow)}
+  .result-tag.selected-red{border-color:var(--red);background:#fef2f2;color:var(--red)}
 
-  .btn{padding:12px 28px;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
-  .btn-primary{background:var(--accent);color:#fff}
-  .btn-primary:hover{background:#1d4ed8}
-  .btn-submit{background:var(--primary);color:#fff;padding:14px 40px;font-size:15px;width:100%}
+  .btn{padding:12px 28px;border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
+  .btn-submit{background:var(--primary);color:#fff;padding:14px 40px;font-size:14px;width:100%;letter-spacing:.5px}
   .btn-submit:hover{background:#1f2937}
   .btn-submit:disabled{opacity:.4;cursor:not-allowed}
-  .btn-outline{background:none;border:1px solid var(--border);color:var(--text-light)}
-  .btn-outline:hover{background:#f3f4f6}
+  .btn-outline{background:none;border:1px solid var(--border);color:var(--text-light);font-size:13px}
+  .btn-outline:hover{background:#f9fafb}
+  .actions{display:flex;gap:12px;margin-top:20px}
 
-  .actions{display:flex;gap:12px;margin-top:24px}
-
-  .toast{position:fixed;top:20px;right:20px;background:var(--green);color:#fff;padding:14px 24px;border-radius:8px;font-size:14px;font-weight:600;z-index:999;transform:translateX(120%);transition:transform .3s}
+  .toast{position:fixed;top:20px;right:20px;background:var(--green);color:#fff;padding:14px 24px;border-radius:8px;font-size:13px;font-weight:600;z-index:999;transform:translateX(120%);transition:transform .3s;box-shadow:0 4px 12px rgba(0,0,0,.15)}
   .toast.show{transform:translateX(0)}
   .toast.error{background:var(--red)}
-
-  .loading-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:998;align-items:center;justify-content:center}
+  .loading-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:998;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
   .loading-overlay.show{display:flex}
   .loading-box{background:#fff;padding:32px 48px;border-radius:12px;text-align:center}
-  .spinner{width:40px;height:40px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+  .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px}
   @keyframes spin{to{transform:rotate(360deg)}}
 
   @media(max-width:640px){.row,.row3{grid-template-columns:1fr}.photo-section{flex-direction:column;align-items:center}}
@@ -86,7 +87,13 @@
 <body>
 
 <div class="header">
-  <div><h1>OBARAI INTELLIGENCE</h1><div class="sub">人員面試表</div></div>
+  <div class="header-brand">
+    <div>
+      <span class="co">OBARAI INTELLIGENCE</span><br>
+      <span class="name">ORBIT<span class="dot">.</span></span>
+    </div>
+    <span class="page">人員面試表</span>
+  </div>
   <div class="nav">
     <a href="index.html">首頁</a>
     <a href="assessment.html">AI 評測</a>
@@ -95,29 +102,27 @@
 </div>
 
 <div class="container">
-  <!-- GAS URL Config -->
   <div id="config-banner" class="card" style="background:#fffbeb;border-color:#fbbf24;display:none">
-    <div style="font-size:14px;font-weight:600;color:#92400e;margin-bottom:8px">尚未設定 Google Drive 連線</div>
-    <div style="font-size:13px;color:#92400e;margin-bottom:12px">請部署 Google Apps Script 並貼上網址，資料才能存入 Drive。<a href="apps-script.gs" target="_blank" style="color:var(--accent)">下載 GAS 腳本</a></div>
+    <div style="font-size:13px;font-weight:600;color:#92400e;margin-bottom:8px">尚未設定 Google Drive 連線</div>
+    <div style="font-size:12px;color:#92400e;margin-bottom:12px">請部署 Google Apps Script 並貼上網址，資料才能存入 Drive。</div>
     <div class="fg">
       <input type="text" id="gas-url" placeholder="https://script.google.com/macros/s/...../exec" oninput="saveGasUrl(this.value)">
     </div>
   </div>
 
-  <!-- Basic Info + Photo -->
   <div class="card">
-    <h2>📋 基本資料</h2>
+    <h2>基本資料</h2>
     <div class="photo-section">
       <div>
         <div class="photo-frame" onclick="document.getElementById('photo-input').click()">
           <input type="file" id="photo-input" accept="image/*" hidden onchange="previewPhoto(this)">
           <img id="photo-preview" style="display:none">
           <div class="placeholder" id="photo-placeholder">
-            <div class="icon">📷</div>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><circle cx="12" cy="13" r="3"/></svg>
             二吋大頭照<br>點擊上傳
           </div>
         </div>
-        <div class="photo-size-note">尺寸：35mm × 45mm（寬×高）<br>解析度建議 300dpi 以上<br>413 × 531 px</div>
+        <div class="photo-size-note">尺寸：35mm x 45mm<br>解析度 300dpi 以上<br>413 x 531 px</div>
       </div>
       <div class="photo-info">
         <div class="row">
@@ -139,14 +144,11 @@
         </div>
       </div>
     </div>
-
     <div class="row">
       <div class="fg"><label class="required">手機號碼</label><input type="tel" id="f-phone" placeholder="09XX-XXX-XXX"></div>
       <div class="fg"><label>Email</label><input type="email" id="f-email"></div>
     </div>
-    <div class="full">
-      <div class="fg"><label>通訊地址</label><input type="text" id="f-address"></div>
-    </div>
+    <div class="full"><div class="fg"><label>通訊地址</label><input type="text" id="f-address"></div></div>
     <div class="row">
       <div class="fg"><label>應徵職位</label><input type="text" id="f-position"></div>
       <div class="fg"><label>期望月薪</label><input type="text" id="f-salary" placeholder="面議 / 40,000-50,000"></div>
@@ -157,9 +159,8 @@
     </div>
   </div>
 
-  <!-- Education -->
   <div class="card">
-    <h2>🎓 學歷</h2>
+    <h2>學歷</h2>
     <div id="edu-list">
       <div class="exp-block">
         <div class="row">
@@ -178,9 +179,8 @@
     <button class="add-btn" onclick="addEdu()">+ 新增學歷</button>
   </div>
 
-  <!-- Work Experience -->
   <div class="card">
-    <h2>💼 工作經歷</h2>
+    <h2>工作經歷</h2>
     <div id="work-list">
       <div class="exp-block">
         <div class="row">
@@ -192,31 +192,21 @@
           <div class="fg"><label>結束日</label><input type="month" class="work-end"></div>
           <div class="fg"><label>離職原因</label><input type="text" class="work-reason"></div>
         </div>
-        <div class="full">
-          <div class="fg"><label>工作內容簡述</label><textarea class="work-desc" rows="2"></textarea></div>
-        </div>
+        <div class="full"><div class="fg"><label>工作內容簡述</label><textarea class="work-desc" rows="2"></textarea></div></div>
       </div>
     </div>
     <button class="add-btn" onclick="addWork()">+ 新增工作經歷</button>
   </div>
 
-  <!-- Skills -->
   <div class="card">
-    <h2>🛠 技能與語言</h2>
-    <div class="full">
-      <div class="fg"><label>專業技能</label><textarea id="f-skills" placeholder="例如：Python, TensorFlow, SQL, Figma..." rows="2"></textarea></div>
-    </div>
-    <div class="full">
-      <div class="fg"><label>語言能力</label><textarea id="f-languages" placeholder="例如：中文（母語）、英文（TOEIC 850）、日文（N2）" rows="2"></textarea></div>
-    </div>
-    <div class="full">
-      <div class="fg"><label>自我介紹 / 補充說明</label><textarea id="f-intro" rows="4" placeholder="請簡述你的職涯目標、核心優勢..."></textarea></div>
-    </div>
+    <h2>技能與語言</h2>
+    <div class="full"><div class="fg"><label>專業技能</label><textarea id="f-skills" placeholder="例如：Python, TensorFlow, SQL, Figma..." rows="2"></textarea></div></div>
+    <div class="full"><div class="fg"><label>語言能力</label><textarea id="f-languages" placeholder="例如：中文（母語）、英文（TOEIC 850）、日文（N2）" rows="2"></textarea></div></div>
+    <div class="full"><div class="fg"><label>自我介紹 / 補充說明</label><textarea id="f-intro" rows="4" placeholder="請簡述你的職涯目標、核心優勢..."></textarea></div></div>
   </div>
 
-  <!-- Interviewer Section -->
   <div class="card">
-    <h2>✍️ 面試官評核</h2>
+    <h2>面試官評核</h2>
     <div id="eval-items">
       <div class="eval-row"><div class="eval-label">專業能力</div><div class="stars" data-eval="professional"></div></div>
       <div class="eval-row"><div class="eval-label">溝通表達</div><div class="stars" data-eval="communication"></div></div>
@@ -225,15 +215,11 @@
       <div class="eval-row"><div class="eval-label">團隊適配</div><div class="stars" data-eval="teamfit"></div></div>
       <div class="eval-row"><div class="eval-label">整體印象</div><div class="stars" data-eval="overall"></div></div>
     </div>
-
     <div class="full" style="margin-top:16px">
       <div class="fg"><label>面試官備註</label><textarea id="f-eval-notes" rows="4" placeholder="面試觀察、追問紀錄、優缺點分析..."></textarea></div>
     </div>
-    <div class="full">
-      <div class="fg"><label>面試官姓名</label><input type="text" id="f-interviewer"></div>
-    </div>
-
-    <div style="font-size:14px;font-weight:600;margin-top:16px;margin-bottom:8px">面試結果</div>
+    <div class="full"><div class="fg"><label>面試官姓名</label><input type="text" id="f-interviewer"></div></div>
+    <div style="font-size:13px;font-weight:600;margin-top:16px;margin-bottom:8px">面試結果</div>
     <div class="result-tags">
       <div class="result-tag" data-result="錄用" onclick="selectResult(this,'selected-green')">錄用</div>
       <div class="result-tag" data-result="備取" onclick="selectResult(this,'selected-yellow')">備取</div>
@@ -241,7 +227,6 @@
     </div>
   </div>
 
-  <!-- Actions -->
   <div class="actions">
     <button class="btn btn-submit" id="submit-btn" onclick="submitForm()">儲存至 Google Drive</button>
     <button class="btn btn-outline" onclick="window.print()">列印</button>
@@ -250,7 +235,7 @@
 
 <div class="toast" id="toast"></div>
 <div class="loading-overlay" id="loading">
-  <div class="loading-box"><div class="spinner"></div><div>正在儲存至 Google Drive...</div></div>
+  <div class="loading-box"><div class="spinner"></div><div style="font-size:13px;color:var(--text-light)">正在儲存至 Google Drive...</div></div>
 </div>
 
 <script>
@@ -260,7 +245,6 @@ let gasUrl = localStorage.getItem(GAS_KEY) || 'https://script.google.com/macros/
 (function init() {
   if (!gasUrl) document.getElementById('config-banner').style.display = 'block';
   else document.getElementById('gas-url').value = gasUrl;
-
   document.querySelectorAll('.stars').forEach(container => {
     for (let i = 1; i <= 5; i++) {
       const s = document.createElement('div');
@@ -274,58 +258,44 @@ let gasUrl = localStorage.getItem(GAS_KEY) || 'https://script.google.com/macros/
       container.appendChild(s);
     }
   });
-
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('f-interview-date').value = today;
+  document.getElementById('f-interview-date').value = new Date().toISOString().split('T')[0];
 })();
 
 function saveGasUrl(v) { gasUrl = v.trim(); localStorage.setItem(GAS_KEY, gasUrl); }
-
 function showToast(msg, isError) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.className = 'toast show' + (isError ? ' error' : '');
   setTimeout(() => t.classList.remove('show'), 4000);
 }
-
 function previewPhoto(input) {
   if (!input.files[0]) return;
   const reader = new FileReader();
   reader.onload = e => {
-    const img = document.getElementById('photo-preview');
-    img.src = e.target.result;
-    img.style.display = 'block';
+    document.getElementById('photo-preview').src = e.target.result;
+    document.getElementById('photo-preview').style.display = 'block';
     document.getElementById('photo-placeholder').style.display = 'none';
   };
   reader.readAsDataURL(input.files[0]);
 }
-
 function addEdu() {
   const block = document.querySelector('#edu-list .exp-block').cloneNode(true);
   block.querySelectorAll('input,select').forEach(el => el.value = '');
-  const rm = document.createElement('button');
-  rm.className = 'remove-btn';
-  rm.innerHTML = '&times;';
-  rm.onclick = () => block.remove();
-  block.appendChild(rm);
+  const rm = document.createElement('button'); rm.className = 'remove-btn'; rm.innerHTML = '&times;';
+  rm.onclick = () => block.remove(); block.appendChild(rm);
   document.getElementById('edu-list').appendChild(block);
 }
-
 function addWork() {
   const block = document.querySelector('#work-list .exp-block').cloneNode(true);
   block.querySelectorAll('input,textarea').forEach(el => el.value = '');
-  const rm = document.createElement('button');
-  rm.className = 'remove-btn';
-  rm.innerHTML = '&times;';
-  rm.onclick = () => block.remove();
+  const rm = document.createElement('button'); rm.className = 'remove-btn'; rm.innerHTML = '&times;';
+  rm.onclick = () => block.remove(); block.appendChild(rm);
   document.getElementById('work-list').appendChild(block);
 }
-
 function selectResult(el, cls) {
   document.querySelectorAll('.result-tag').forEach(t => t.className = 'result-tag');
   el.classList.add(cls);
 }
-
 function collectData() {
   const data = { type: 'interview' };
   data.name = document.getElementById('f-name').value.trim();
@@ -347,41 +317,20 @@ function collectData() {
   data.intro = document.getElementById('f-intro').value.trim();
   data.evalNotes = document.getElementById('f-eval-notes').value.trim();
   data.interviewer = document.getElementById('f-interviewer').value.trim();
-
   const resultEl = document.querySelector('.result-tag[class*="selected"]');
   data.result = resultEl ? resultEl.dataset.result : '';
-
   data.evalScores = {};
-  document.querySelectorAll('.stars').forEach(s => {
-    data.evalScores[s.dataset.eval] = parseInt(s.dataset.score) || 0;
-  });
-
+  document.querySelectorAll('.stars').forEach(s => { data.evalScores[s.dataset.eval] = parseInt(s.dataset.score) || 0; });
   data.education = [];
   document.querySelectorAll('#edu-list .exp-block').forEach(block => {
-    data.education.push({
-      school: block.querySelector('.edu-school').value.trim(),
-      dept: block.querySelector('.edu-dept').value.trim(),
-      degree: block.querySelector('.edu-degree').value,
-      start: block.querySelector('.edu-start').value,
-      end: block.querySelector('.edu-end').value
-    });
+    data.education.push({ school: block.querySelector('.edu-school').value.trim(), dept: block.querySelector('.edu-dept').value.trim(), degree: block.querySelector('.edu-degree').value, start: block.querySelector('.edu-start').value, end: block.querySelector('.edu-end').value });
   });
-
   data.work = [];
   document.querySelectorAll('#work-list .exp-block').forEach(block => {
-    data.work.push({
-      company: block.querySelector('.work-company').value.trim(),
-      title: block.querySelector('.work-title').value.trim(),
-      start: block.querySelector('.work-start').value,
-      end: block.querySelector('.work-end').value,
-      reason: block.querySelector('.work-reason').value.trim(),
-      desc: block.querySelector('.work-desc').value.trim()
-    });
+    data.work.push({ company: block.querySelector('.work-company').value.trim(), title: block.querySelector('.work-title').value.trim(), start: block.querySelector('.work-start').value, end: block.querySelector('.work-end').value, reason: block.querySelector('.work-reason').value.trim(), desc: block.querySelector('.work-desc').value.trim() });
   });
-
   return data;
 }
-
 async function fileToBase64(fileInput) {
   const file = fileInput.files[0];
   if (!file) return null;
@@ -391,37 +340,22 @@ async function fileToBase64(fileInput) {
     reader.readAsDataURL(file);
   });
 }
-
 async function submitForm() {
   const data = collectData();
   if (!data.name) { showToast('請填寫姓名', true); return; }
   if (!gasUrl) { showToast('請先設定 Google Apps Script 網址', true); return; }
-
   const btn = document.getElementById('submit-btn');
   btn.disabled = true;
   document.getElementById('loading').classList.add('show');
-
   const photo = await fileToBase64(document.getElementById('photo-input'));
   if (photo) data.photo = photo;
-
   try {
-    const res = await fetch(gasUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(data)
-    });
+    const res = await fetch(gasUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(data) });
     const result = await res.json();
-    if (result.success) {
-      showToast('已成功儲存至 Google Drive');
-    } else {
-      showToast('儲存失敗：' + (result.error || '未知錯誤'), true);
-    }
-  } catch (err) {
-    showToast('連線錯誤：' + err.message, true);
-  } finally {
-    btn.disabled = false;
-    document.getElementById('loading').classList.remove('show');
-  }
+    if (result.success) showToast('已成功儲存至 Google Drive');
+    else showToast('儲存失敗：' + (result.error || '未知錯誤'), true);
+  } catch (err) { showToast('連線錯誤：' + err.message, true); }
+  finally { btn.disabled = false; document.getElementById('loading').classList.remove('show'); }
 }
 </script>
 </body>
