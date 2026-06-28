@@ -609,7 +609,7 @@ function submitTest() {
     </div>
 
     <div class="bigdata-panel">
-      <h3>大數據綜合分析</h3>
+      <h3>ORBIT 綜合分析</h3>
       <div class="bigdata-stats">
         <div class="bigdata-stat"><div class="val" style="color:${v.color}">${bd.percentile}%</div><div class="label">優於同類受測者</div></div>
         <div class="bigdata-stat"><div class="val" style="color:#93c5fd">${bd.fitLabel}</div><div class="label">AI 協作適性</div></div>
@@ -619,7 +619,7 @@ function submitTest() {
     </div>
 
     <div class="rec-card">
-      <h3>個人化發展建議</h3>
+      <h3>ORBIT 建議</h3>
       ${recs.map(r => '<div class="rec-path ' + r.cls + '"><h4>' + r.title + '</h4><p>' + r.text + '</p></div>').join('')}
     </div>
 

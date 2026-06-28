@@ -687,7 +687,7 @@
   <div id="intro">
     <div class="intro-card">
       <h2>AI 程式設計師適性評測</h2>
-      <p>本測驗透過 8 大維度，綜合評估面試者是否適合從事 AI 程式設計相關工作，並基於大數據模型提供個人化發展建議。</p>
+      <p>本測驗透過 8 大維度，綜合評估面試者是否適合從事 AI 程式設計相關工作，並由 ORBIT 提供綜合分析與發展建議。</p>
       <div class="intro-dims">
         <div class="intro-dim"><div class="icon">🧠</div><div class="name">邏輯思維</div></div>
         <div class="intro-dim"><div class="icon">📐</div><div class="name">數學統計</div></div>
@@ -1330,7 +1330,7 @@ function submitTest() {
     </div>
 
     <div class="bigdata-panel">
-      <h3>大數據綜合分析</h3>
+      <h3>ORBIT 綜合分析</h3>
       <div class="bigdata-stats">
         <div class="bigdata-stat">
           <div class="val" style="color:${verdict.color}">${bigdata.percentile}%</div>
@@ -1351,7 +1351,7 @@ function submitTest() {
     </div>
 
     <div class="rec-card">
-      <h3>個人化發展建議</h3>
+      <h3>ORBIT 建議</h3>
       ${recs.map(r => `
         <div class="rec-path ${r.cls}">
           <h4>${r.title}</h4>
@@ -1530,7 +1530,7 @@ function getBigDataAnalysis(scores, overall, edu, exp) {
     percentile,
     fitScore: fitLabels[fitIdx],
     potential: potLabels[potIdx],
-    insights: insights.length > 0 ? insights : ['<strong>數據量不足：</strong>部分題目未作答，無法進行完整的大數據比對分析。建議面試者完整作答以獲得更精確的評估。']
+    insights: insights.length > 0 ? insights : ['<strong>數據量不足：</strong>部分題目未作答，ORBIT 無法進行完整的比對分析。建議面試者完整作答以獲得更精確的評估。']
   };
 }
 
