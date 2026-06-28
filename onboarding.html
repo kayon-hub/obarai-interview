@@ -16,14 +16,14 @@
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
 
-  .header{background:var(--primary);color:#fff;padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between}
+  .header{background:var(--primary);color:#fff;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
   .header-brand{display:flex;align-items:baseline;gap:12px}
   .header-brand .co{font-size:9px;letter-spacing:3px;color:#6b7280;text-transform:uppercase}
   .header-brand .name{font-size:18px;font-weight:800;letter-spacing:2px}
   .header-brand .dot{color:var(--accent)}
   .header-brand .page{font-size:12px;color:#9ca3af;margin-left:8px;padding-left:12px;border-left:1px solid #374151}
-  .nav{display:flex;gap:4px;align-items:center}
-  .nav a{color:#9ca3af;text-decoration:none;font-size:12px;padding:6px 14px;border-radius:6px;transition:all .15s;font-weight:500;letter-spacing:.3px}
+  .nav{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+  .nav a{color:#9ca3af;text-decoration:none;font-size:12px;padding:6px 10px;border-radius:6px;transition:all .15s;font-weight:500;letter-spacing:.3px;white-space:nowrap}
   .nav a:hover{color:#fff;background:rgba(255,255,255,.08)}
 
   .container{max-width:780px;margin:0 auto;padding:32px 20px 80px}
@@ -102,7 +102,7 @@
   .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px}
   @keyframes spin{to{transform:rotate(360deg)}}
 
-  @media(max-width:700px){.row,.row3,.id-cards{grid-template-columns:1fr}.id-frame{width:100%}}
+  @media(max-width:700px){.row,.row3,.id-cards{grid-template-columns:1fr}.id-frame{width:100%}.header{flex-direction:column;align-items:flex-start}.header-brand .page{display:none}}
   @media print{.header,.actions,.attach-zone,.fremove{display:none !important}.card{break-inside:avoid;box-shadow:none;border:1px solid #ddd}}
 </style>
 </head>
