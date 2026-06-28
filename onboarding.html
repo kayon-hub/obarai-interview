@@ -57,6 +57,17 @@
   .file-item .fremove:hover{color:var(--red)}
   .file-preview{width:48px;height:48px;object-fit:cover;border-radius:4px;flex-shrink:0}
 
+  .sig-area{position:relative;margin-bottom:12px}
+  .sig-canvas{width:100%;height:180px;border:1.5px solid var(--border);border-radius:8px;cursor:crosshair;background:#fff;touch-action:none}
+  .sig-canvas:hover{border-color:var(--accent)}
+  .sig-canvas.signing{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+  .sig-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}
+  .sig-actions button{background:none;border:1px solid var(--border);border-radius:4px;padding:4px 14px;font-size:11px;font-weight:600;color:var(--text-light);cursor:pointer;transition:all .15s;letter-spacing:.3px}
+  .sig-actions button:hover{border-color:var(--text-light);color:var(--text)}
+  .sig-label{font-size:12px;font-weight:600;color:var(--text-light);margin-bottom:6px;letter-spacing:.3px}
+  .sig-placeholder{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:13px;color:#d1d5db;pointer-events:none;transition:opacity .2s}
+  .sig-legal{font-size:10px;color:var(--text-light);line-height:1.7;margin-top:12px;padding:12px 14px;background:#f9fafb;border:1px solid #f3f4f6;border-radius:6px}
+
   .btn{padding:12px 28px;border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
   .btn-submit{background:var(--primary);color:#fff;padding:14px 40px;font-size:14px;width:100%;letter-spacing:.5px}
   .btn-submit:hover{background:#1f2937}
@@ -258,13 +269,23 @@
   </div>
 
   <div class="card">
-    <h2>確認聲明</h2>
-    <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;line-height:1.8">
+    <h2>確認聲明與簽署</h2>
+    <p style="font-size:12px;color:var(--text-light);margin-bottom:20px;line-height:1.8">
       本人確認以上所填資料及附件均屬真實，若有不實願負相關法律責任。本人同意 OBARAI INTELLIGENCE Co., Ltd. 依個人資料保護法之規定，於人事管理目的範圍內蒐集、處理及利用本表所載之個人資料。
     </p>
-    <div class="row">
-      <div class="fg"><label>填表人簽名</label><input type="text" id="f-signature" placeholder="請輸入姓名作為電子簽名"></div>
+    <div class="sig-label">填表人簽名</div>
+    <div class="sig-area">
+      <canvas id="sig-canvas" class="sig-canvas"></canvas>
+      <div class="sig-placeholder" id="sig-placeholder">請在此處簽名</div>
+    </div>
+    <div class="sig-actions">
+      <button onclick="clearSignature()">清除重簽</button>
+    </div>
+    <div class="row" style="margin-top:16px">
       <div class="fg"><label>填表日期</label><input type="date" id="f-sign-date"></div>
+    </div>
+    <div class="sig-legal">
+      依據電子簽章法第 4 條，本電子簽章與手寫簽名具有同等法律效力。簽署人於本表單以電子方式簽署，即視為對上述聲明內容之同意與確認。簽署紀錄（含時間戳記、IP 位址）將隨表單資料一併保存。
     </div>
   </div>
 
@@ -297,6 +318,68 @@ function checkPin() {
   if (sessionStorage.getItem(PIN_SESSION_KEY) === '1') document.getElementById('lock-screen').style.display = 'none';
   else document.getElementById('pin-input').focus();
 })();
+
+// Signature pad
+const canvas = document.getElementById('sig-canvas');
+const ctx = canvas.getContext('2d');
+let signing = false;
+let hasSigned = false;
+
+function resizeCanvas() {
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * 2;
+  canvas.height = rect.height * 2;
+  ctx.scale(2, 2);
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.strokeStyle = '#111827';
+}
+resizeCanvas();
+window.addEventListener('resize', () => { if (!hasSigned) resizeCanvas(); });
+
+function getPos(e) {
+  const rect = canvas.getBoundingClientRect();
+  const t = e.touches ? e.touches[0] : e;
+  return { x: t.clientX - rect.left, y: t.clientY - rect.top };
+}
+
+canvas.addEventListener('mousedown', startSign);
+canvas.addEventListener('mousemove', drawSign);
+canvas.addEventListener('mouseup', endSign);
+canvas.addEventListener('mouseleave', endSign);
+canvas.addEventListener('touchstart', e => { e.preventDefault(); startSign(e); });
+canvas.addEventListener('touchmove', e => { e.preventDefault(); drawSign(e); });
+canvas.addEventListener('touchend', endSign);
+
+function startSign(e) {
+  signing = true;
+  hasSigned = true;
+  canvas.classList.add('signing');
+  document.getElementById('sig-placeholder').style.opacity = '0';
+  const p = getPos(e);
+  ctx.beginPath();
+  ctx.moveTo(p.x, p.y);
+}
+function drawSign(e) {
+  if (!signing) return;
+  const p = getPos(e);
+  ctx.lineTo(p.x, p.y);
+  ctx.stroke();
+}
+function endSign() {
+  signing = false;
+  canvas.classList.remove('signing');
+}
+function clearSignature() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  hasSigned = false;
+  document.getElementById('sig-placeholder').style.opacity = '1';
+}
+function getSignatureData() {
+  if (!hasSigned) return null;
+  return canvas.toDataURL('image/png').split(',')[1];
+}
 
 const GAS_KEY = 'obarai_gas_url';
 let gasUrl = localStorage.getItem(GAS_KEY) || 'https://script.google.com/macros/s/AKfycbwurdEwtQMWAcgtnFj5nJ8U19z3uE4TnbIqXs1rMLxvQqXV7y65oBXPZ7RSh-V1pqzt/exec';
@@ -386,13 +469,14 @@ function collectData() {
   d.laborIns = document.getElementById('f-labor-ins').value;
   d.healthIns = document.getElementById('f-health-ins').value;
   d.insNotes = document.getElementById('f-ins-notes').value.trim();
-  d.signature = document.getElementById('f-signature').value.trim();
   d.signDate = document.getElementById('f-sign-date').value;
+  d.signedAt = new Date().toISOString();
   return d;
 }
 async function submitForm() {
   const data = collectData();
   if (!data.name) { showToast('請填寫姓名', true); return; }
+  if (!hasSigned) { showToast('請先簽名', true); return; }
   if (!gasUrl) { showToast('請先設定 Google Apps Script 網址', true); return; }
   const btn = document.getElementById('submit-btn');
   btn.disabled = true;
@@ -401,6 +485,8 @@ async function submitForm() {
   const idBack = await fileInputToBase64('id-back-input');
   if (idFront) data.idFront = idFront;
   if (idBack) data.idBack = idBack;
+  const sigData = getSignatureData();
+  if (sigData) data.signature = { name: 'signature.png', mime: 'image/png', data: sigData };
   data.files = {};
   if (uploadedFiles.diploma.length) data.files.diploma = uploadedFiles.diploma;
   if (uploadedFiles.cert.length) data.files.cert = uploadedFiles.cert;

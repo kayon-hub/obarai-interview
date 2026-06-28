@@ -92,6 +92,11 @@ function handleOnboarding(data, root) {
   var folderName = (data.name || '未具名') + '_' + (data.startDate || today());
   var folder = parentFolder.createFolder(folderName);
 
+  // Signature
+  if (data.signature && data.signature.data) {
+    saveFile(folder, data.signature.data, data.signature.mime, '簽名.png');
+  }
+
   // ID cards
   if (data.idFront) {
     saveFile(folder, data.idFront.data, data.idFront.mime, '身分證正面' + getExtFromMime(data.idFront.mime));
@@ -212,11 +217,3 @@ function jsonResponse(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
 }
 
-// Test function (run manually to verify Drive access)
-function testSetup() {
-  var root = getOrCreateFolder(DriveApp.getRootFolder(), ROOT_FOLDER_NAME);
-  Logger.log('OBARAI-HR folder: ' + root.getUrl());
-  getOrCreateFolder(root, '面試表');
-  getOrCreateFolder(root, '入職資料');
-  Logger.log('Setup complete!');
-}
