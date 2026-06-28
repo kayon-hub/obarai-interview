@@ -57,6 +57,14 @@ function handleInterview(data, root) {
     saveFile(folder, data.photo.data, data.photo.mime, '大頭照_' + getExt(data.photo.name));
   }
 
+  // Signatures
+  if (data.sigCandidate && data.sigCandidate.data) {
+    saveFile(folder, data.sigCandidate.data, data.sigCandidate.mime, '簽名_面試者.png');
+  }
+  if (data.sigInterviewer && data.sigInterviewer.data) {
+    saveFile(folder, data.sigInterviewer.data, data.sigInterviewer.mime, '簽名_面試官.png');
+  }
+
   // Log to sheet
   var sheet = getOrCreateSheet(root, SHEET_NAME);
   ensureInterviewHeaders(sheet);
