@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>OBARAI INTELLIGENCE - AI 協作者適性評測</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  :root { --primary:#0a0a0a; --accent:#2563eb; --accent-light:#3b82f6; --green:#16a34a; --yellow:#ca8a04; --red:#dc2626; --orange:#ea580c; --bg:#f8f9fa; --card:#fff; --border:#e5e7eb; --text:#111827; --text-light:#6b7280; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+
+  .header{background:var(--primary);color:#fff;padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between}
+  .header-brand{display:flex;align-items:baseline;gap:12px}
+  .header-brand .co{font-size:9px;letter-spacing:3px;color:#6b7280;text-transform:uppercase}
+  .header-brand .name{font-size:18px;font-weight:800;letter-spacing:2px}
+  .header-brand .dot{color:var(--accent)}
+  .header-brand .page{font-size:12px;color:#9ca3af;margin-left:8px;padding-left:12px;border-left:1px solid #374151}
+  .nav{display:flex;gap:4px;align-items:center}
+  .nav a{color:#9ca3af;text-decoration:none;font-size:12px;padding:6px 14px;border-radius:6px;transition:all .15s;font-weight:500;letter-spacing:.3px}
+  .nav a:hover{color:#fff;background:rgba(255,255,255,.08)}
+
+  .container{max-width:820px;margin:0 auto;padding:32px 20px 80px}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:28px;margin-bottom:16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .card h2{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-light);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px}
+  .fg{display:flex;flex-direction:column;gap:4px}
+  .fg label{font-size:12px;font-weight:600;color:var(--text-light);letter-spacing:.3px}
+  .fg input,.fg select{padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;outline:none;transition:all .15s;background:#fff}
+  .fg input:focus,.fg select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+  .fg textarea{padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;outline:none;resize:vertical;min-height:72px;transition:all .15s}
+  .fg textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+
+  /* Progress */
+  .progress-bar{background:#e5e7eb;height:4px;border-radius:2px;margin-bottom:6px;overflow:hidden}
+  .progress-fill{background:var(--accent);height:100%;border-radius:2px;transition:width .4s ease}
+  .progress-text{font-size:11px;color:var(--text-light);text-align:right;margin-bottom:20px;letter-spacing:.3px}
+
+  /* Sections */
+  .section{display:none}
+  .section.active{display:block}
+
+  .section-header{margin-bottom:20px}
+  .section-num{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+  .section-title{font-size:17px;font-weight:700}
+  .section-desc{font-size:12px;color:var(--text-light);margin-top:4px}
+
+  /* Questions */
+  .question{margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid #f3f4f6}
+  .question:last-of-type{border-bottom:none;margin-bottom:0;padding-bottom:0}
+  .q-label{font-size:14px;font-weight:600;margin-bottom:10px;display:flex;gap:8px}
+  .q-num{color:var(--accent);font-weight:700;flex-shrink:0}
+
+  .options{display:flex;flex-direction:column;gap:6px}
+  .option{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .12s;font-size:14px}
+  .option:hover{border-color:var(--accent-light);background:#f0f4ff}
+  .option.selected{border-color:var(--accent);background:#eff6ff}
+  .option input[type="radio"]{margin-top:3px;accent-color:var(--accent)}
+
+  .slider-group{display:flex;align-items:center;gap:12px}
+  .slider-group input[type="range"]{flex:1;accent-color:var(--accent)}
+  .slider-val{font-weight:700;font-size:15px;color:var(--accent);min-width:32px;text-align:center}
+  .slider-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--text-light);margin-top:4px}
+
+  .nav-buttons{display:flex;justify-content:space-between;margin-top:28px}
+  .btn{padding:10px 24px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:.3px}
+  .btn-secondary{background:#f3f4f6;color:var(--text)}
+  .btn-secondary:hover{background:#e5e7eb}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{background:#1d4ed8}
+  .btn-submit{background:var(--primary);color:#fff;padding:12px 36px;font-size:14px}
+  .btn-submit:hover{background:#1f2937}
+
+  /* Results */
+  #results{display:none}
+
+  .result-hero{text-align:center;padding:40px 28px;background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:20px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .score-ring{width:150px;height:150px;margin:0 auto 20px;position:relative}
+  .score-ring svg{transform:rotate(-90deg)}
+  .score-ring .score-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+  .score-ring .score-num{font-size:40px;font-weight:800;line-height:1}
+  .score-ring .score-label{font-size:12px;color:var(--text-light)}
+  .verdict{font-size:20px;font-weight:800;margin-bottom:8px}
+  .verdict-desc{font-size:13px;color:var(--text-light);max-width:480px;margin:0 auto}
+  .meta-line{margin-top:14px;font-size:12px;color:var(--text-light)}
+
+  .chart-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:28px;margin-bottom:20px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .chart-card h3{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-light);margin-bottom:20px}
+
+  .dim-list{display:flex;flex-direction:column;gap:14px}
+  .dim-item{display:flex;align-items:center;gap:12px}
+  .dim-name{width:110px;font-size:12px;font-weight:600;flex-shrink:0}
+  .dim-bar-bg{flex:1;height:8px;background:#f3f4f6;border-radius:4px;overflow:hidden}
+  .dim-bar-fill{height:100%;border-radius:4px;transition:width .8s ease}
+  .dim-score{width:36px;font-size:13px;font-weight:700;text-align:right}
+
+  .analysis-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+  .analysis-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .analysis-card h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-light);margin-bottom:12px}
+  .analysis-card ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+  .analysis-card li{font-size:13px;padding:8px 12px;background:#f9fafb;border-radius:6px;line-height:1.5}
+
+  .tag{display:inline-block;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:600;letter-spacing:.3px}
+  .tag-green{background:#dcfce7;color:#166534}
+  .tag-yellow{background:#fef9c3;color:#854d0e}
+
+  .rec-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:28px;margin-bottom:20px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .rec-card h3{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-light);margin-bottom:16px}
+  .rec-path{padding:14px 16px;border-radius:6px;margin-bottom:10px}
+  .rec-path h4{font-size:13px;font-weight:700;margin-bottom:4px}
+  .rec-path p{font-size:12px;color:var(--text-light);line-height:1.6}
+  .rec-primary{background:#eff6ff;border-left:3px solid var(--accent)}
+  .rec-secondary{background:#f0fdf4;border-left:3px solid var(--green)}
+  .rec-caution{background:#fefce8;border-left:3px solid var(--yellow)}
+
+  .bigdata-panel{background:var(--primary);color:#fff;border-radius:10px;padding:28px;margin-bottom:20px}
+  .bigdata-panel h3{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#93c5fd;margin-bottom:16px}
+  .bigdata-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+  .bigdata-stat{text-align:center;padding:14px;background:rgba(255,255,255,.06);border-radius:8px}
+  .bigdata-stat .val{font-size:26px;font-weight:800}
+  .bigdata-stat .label{font-size:11px;color:#9ca3af;margin-top:4px}
+  .bigdata-insight{font-size:12px;color:#d1d5db;line-height:1.8;padding:14px;background:rgba(255,255,255,.04);border-radius:8px}
+  .bigdata-insight strong{color:#93c5fd}
+
+  .print-btn{display:block;margin:0 auto;background:none;border:1px solid var(--border);padding:8px 20px;border-radius:6px;font-size:12px;color:var(--text-light);cursor:pointer;letter-spacing:.3px}
+  .print-btn:hover{background:#f9fafb}
+  .footer-note{text-align:center;margin-top:14px;font-size:11px;color:var(--text-light)}
+
+  .hidden{display:none !important}
+  @media(max-width:640px){.row,.analysis-grid,.bigdata-stats{grid-template-columns:1fr}}
+  @media print{.header,.nav-buttons,.print-btn{display:none !important}.card,.section{break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-brand">
+    <div>
+      <span class="co">OBARAI INTELLIGENCE</span><br>
+      <span class="name">ORBIT<span class="dot">.</span></span>
+    </div>
+    <span class="page">AI 協作者適性評測</span>
+  </div>
+  <div class="nav">
+    <a href="index.html">首頁</a>
+    <a href="assessment.html">AI 工程師</a>
+    <a href="form.html">面試表</a>
+  </div>
+</div>
+
+<div class="container" id="app">
+
+  <!-- Intro -->
+  <div id="intro">
+    <div class="card" style="text-align:center;padding:40px 28px">
+      <div style="font-size:9px;letter-spacing:4px;color:#9ca3af;text-transform:uppercase;margin-bottom:4px">OBARAI INTELLIGENCE</div>
+      <div style="font-size:28px;font-weight:800;letter-spacing:2px;margin-bottom:16px">AI 協作者適性評測</div>
+      <p style="font-size:13px;color:var(--text-light);max-width:500px;margin:0 auto 24px;line-height:1.8">
+        本測驗專為非技術背景人員設計，不考程式碼、不考數學。<br>
+        透過 6 大維度評估你是否具備與 AI 協作的潛力，<br>
+        找出你的優勢路線和最適合的成長方向。
+      </p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:480px;margin:0 auto 28px">
+        <div style="padding:14px 8px;background:#f9fafb;border-radius:8px;border:1px solid #f3f4f6"><div style="font-size:12px;font-weight:700">學習適應力</div></div>
+        <div style="padding:14px 8px;background:#f9fafb;border-radius:8px;border:1px solid #f3f4f6"><div style="font-size:12px;font-weight:700">問題拆解力</div></div>
+        <div style="padding:14px 8px;background:#f9fafb;border-radius:8px;border:1px solid #f3f4f6"><div style="font-size:12px;font-weight:700">AI 工具應用</div></div>
+        <div style="padding:14px 8px;background:#f9fafb;border-radius:8px;border:1px solid #f3f4f6"><div style="font-size:12px;font-weight:700">溝通理解力</div></div>
+        <div style="padding:14px 8px;background:#f9fafb;border-radius:8px;border:1px solid #f3f4f6"><div style="font-size:12px;font-weight:700">數位素養</div></div>
+        <div style="padding:14px 8px;background:#f9fafb;border-radius:8px;border:1px solid #f3f4f6"><div style="font-size:12px;font-weight:700">主動性與韌性</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>基本資料</h2>
+      <div class="row">
+        <div class="fg"><label>姓名</label><input type="text" id="c-name" placeholder="請輸入姓名"></div>
+        <div class="fg"><label>目前 / 應徵角色</label>
+          <select id="c-role">
+            <option value="AI 協作專員">AI 協作專員</option>
+            <option value="專案管理">專案管理</option>
+            <option value="行政 / 營運">行政 / 營運</option>
+            <option value="業務 / 行銷">業務 / 行銷</option>
+            <option value="設計 / 內容">設計 / 內容</option>
+            <option value="其他">其他</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="fg"><label>技術背景</label>
+          <select id="c-bg">
+            <option value="完全外行">完全外行，從零開始</option>
+            <option value="略懂皮毛">略懂皮毛，會用基本工具</option>
+            <option value="有一些基礎">有一些基礎，能獨立操作</option>
+            <option value="有實務經驗">有實務經驗，但非本科</option>
+          </select>
+        </div>
+        <div class="fg"><label>使用 AI 工具的經驗</label>
+          <select id="c-ai-exp">
+            <option value="從沒用過">從沒用過</option>
+            <option value="偶爾玩玩">偶爾玩玩 ChatGPT / Claude</option>
+            <option value="日常在用">日常工作中有在用</option>
+            <option value="重度使用者">重度使用者，幾乎天天用</option>
+          </select>
+        </div>
+      </div>
+      <div class="nav-buttons"><div></div><button class="btn btn-primary" onclick="startTest()">開始評測</button></div>
+    </div>
+  </div>
+
+  <!-- Test -->
+  <div id="test-area" class="hidden">
+    <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+    <div class="progress-text" id="progress-text"></div>
+
+    <!-- Part 1: Learning -->
+    <div class="section active card" data-section="0">
+      <div class="section-header">
+        <div class="section-num">Part 1 / 6</div>
+        <div class="section-title">學習適應力</div>
+        <div class="section-desc">面對新事物時的學習模式和適應速度</div>
+      </div>
+      <div class="question">
+        <div class="q-label"><span class="q-num">Q1.</span> 主管交給你一個你完全沒接觸過的新工具，你的第一個反應是？</div>
+        <div class="options" data-q="q1">
+          <label class="option"><input type="radio" name="q1" value="0"> 等主管安排人教我</label>
+          <label class="option"><input type="radio" name="q1" value="1"> 先問同事有沒有人會</label>
+          <label class="option"><input type="radio" name="q1" value="2"> YouTube 找教學影片邊看邊試</label>
+          <label class="option"><input type="radio" name="q1" value="3"> 先自己摸索，搞不定再查資料或問人</label>
+        </div>
+      </div>
+      <div class="question">
+        <div class="q-label"><span class="q-num">Q2.</span> 你正在學一個新技能，學到一半發現方向錯了需要砍掉重練，你會？</div>
+        <div class="options" data-q="q2">
+          <label class="option"><input type="radio" name="q2" value="0"> 覺得很挫折，可能就放棄了</label>
+          <label class="option"><input type="radio" name="q2" value="1"> 猶豫很久，但最後還是重來</label>
+          <label class="option"><input type="radio" name="q2" value="3"> 馬上調整，失敗本來就是學習的一部分</label>
+          <label class="option"><input type="radio" name="q2" value="2"> 先釐清哪裡出錯，保留能用的部分再修正</label>
+        </div>
+      </div>
+      <div class="question">
+        <div class="q-label"><span class="q-num">Q3.</span> 過去半年，你自發性學過最多的東西是什麼類型？</div>
+        <div class="options" data-q="q3">
+          <label class="option"><input type="radio" name="q3" value="0"> 沒有特別學什麼</label>
+          <label class="option"><input type="radio" name="q3" value="1"> 跟工作直接相關的技能</label>
+          <label class="option"><input type="radio" name="q3" value="2"> 有興趣的新領域（不一定跟工作有關）</label>
+          <label class="option"><input type="radio" name="q3" value="3"> 同時在學好幾樣不同的東西</label>
+        </div>
+      </div>
+      <div class="question">
+        <div class="q-label"><span class="q-num">Q4.</span> 你覺得「學新東西」對你來說是什麼感覺？</div>
+        <div class="options" data-q="q4">
+          <label class="option"><input type="radio" name="q4" value="0"> 壓力，能不學就不學</label>
+          <label class="option"><input type="radio" name="q4" value="1"> 看情況，有興趣的才學得下去</label>
+          <label class="option"><input type="radio" name="q4" value="2"> 還好，習慣了</label>
+          <label class="option"><input type="radio" name="q4" value="3"> 蠻享受的，喜歡搞懂新東西的感覺</label>
+        </div>
+      </div>
+      <div class="nav-buttons"><div></div><button class="btn btn-primary" onclick="nextSection()">下一部分 →</button></div>
+    </div>
+
+    <!-- Part 2: Problem Decomposition -->
+    <div class="section card" data-section="1">
+      <div class="section-header">
+        <div class="section-num">Part 2 / 6</div>
+        <div class="section-title">問題拆解力</div>
+        <div class="section-desc">把複雜問題拆成小步驟的能力</div>
+      </div>
+      <div class="question">
+        <div class="q-label"><span class="q-num">Q5.</span> 老闆說「幫我整理一下上個月的客戶資料」，但沒說要整理什麼、整理成什麼樣。你會？</div>
+        <div class="options" data-q="q5">
+          <label class="option"><input type="radio" name="q5" value="0"> 照自己理解做，做完再給老闆看</label>
+          <label class="option"><input type="radio" name="q5" value="1"> 直接問老闆要什麼格式</label>
+          <label class="option"><input type="radio" name="q5" value="3"> 先想清楚有哪些可能的需求，列出來確認後再動手</label>
+          <label class="option"><input type="radio" name="q5" value="2"> 找上次類似的檔案來參考</label>
+        </div>
+      </div>
+      <div class="question">
+        <div class="q-label"><span class="q-num">Q6.</span> 你要辦一場 30 人的尾牙，從來沒辦過。你的第一步是？</div>
+        <div class="options" data-q="q6">
+          <label class="option"><input type="radio" name="q6" value="1"> 上網搜尋「尾牙怎麼辦」</label>
+          <label class="option"><input type="radio" name="q6" value="3"> 列出所有要搞定的事情（場地、預算、餐點、節目...），排優先順序</label>
+          <label class="option"><input type="radio" name="q6" value="2"> 問辦過的同事要經驗</label>
+          <label class="option"><input type="radio" name="q6" value="0"> 先找餐廳，其他的到時候再說</label>
+        </div>
+      </div>
+      <div class="question">
+        <div class="q-label"><span class="q-num">Q7.</span> 一個任務你做到一半卡住了，接下來你通常怎麼處理？</div>
+        <div class="options" data-q="q7">
+          <label class="option"><input type="radio" name="q7" value="0"> 等有人來幫忙</label>
+          <label class="option"><input type="radio" name="q7" value="1"> 換做別的事，晚點再回來看</label>
+          <label class="option"><input type="radio" name="q7" value="2"> 把卡住的地方描述清楚，去找答案或問人</label>
+          <label class="option"><input type="radio" name="q7" value="3"> 把問題拆更小，找出到底是哪一步卡住的</label>
+        </div>
+      </div>
+      <div class="question">
+        <div class="q-label"><span class="q-num">Q8.</span> 請用你的話簡述：如果要你「把一份紙本問卷改成線上表單」，你會怎麼做？（不用技術用語，說步驟就好）</div>
+        <div class="fg"><textarea id="q8-text" placeholder="例如：先看問卷有哪些題目，然後..."></textarea></div>
+      </div>
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="prevSection()">← 上一部分</button>
+        <button class="btn btn-primary" onclick="nextSection()">下一部分 →</button>
+      </div>
+    </div>
+
+    <!-- Part 3: AI Tools -->
+    <div class="section card" data-section="2">
+      <div class="section-header">
+        <div class="section-num">Part 3 / 6</div>
+        <div class="section-title">AI 工具應用</div>
+        <div class="section-desc">使用 AI 工具的實際經驗和理解程度</div>
+      </div>
+      <div class="question">
+        <div class="q-label"><span class="q-num">Q9.</span> 你問 AI「幫我寫一封催款信」，AI 寫出來的內容語氣太兇。你會怎麼做？</div>
+        <div class="options" data-q="q9">
+          <label class="option"><input type="radio" name="q9" value="0"> AI 不好用，自己寫比較快</label>
+          <label class="option"><input type="radio" name="q9" value="1"> 直接用，反正內容差不多</label>
+          <label class="option"><input type="radio" name="q9" value="2"> 告訴 AI「語氣溫和一點」重新生成</label>
+          <label class="option"><input type="radio" name="q9" value="3"> 補充具體要求，例如「用商業禮貌的語氣，不要威脅性用詞，保持友善但明確」</label>
+        </div>
+      </div>
+      <div class="question">
+        <div class="q-label"><span class="q-num">Q10.</span> AI 給你一個答案，但你不確定對不對。你會？</div>
+        <div class="options" data-q="q10">
+          <label class="option"><input type="radio" name="q10" value="0"> AI 說的應該是對的，直接用</label>
+          <label class="option"><input type="radio" name="q10" value="1"> 問身邊的人確認</label>
+          <label class="option"><input type="radio" name="q10" value="3"> 交叉比對其他來源，或請 AI 解釋它的推理過程</label>
+          <label class="option"><input type="radio" name="q10" value="2"> 不信任 AI，完全不用它的答案</label>
+        </div>
+      </div>
+      <div class="question">
+        <div class="q-label"><span class="q-num">Q11.</span> 你覺得 AI 目前最像什麼角色？</div>
+        <div class="options" data-q="q11">
+          <label class="option"><input type="radio" name="q11" value="1"> 一個什麼都知道的百科全書</label>
+          <label class="option"><input type="radio" name="q11" value="3"> 一個很強的助手，但需要你給明確指令才能發揮</label>
+          <label class="option"><input type="radio" name="q11" value="0"> 一個會取代人類的威脅</label>
+          <label class="option"><input type="radio" name="q11" value="2"> 一個有時候好用有時候亂講的工具</label>
+        </div>
+      </div>
+      <div class="question">
+        <div class="q-label"><span class="q-num">Q12.</span> 如果你可以請 AI 幫你處理日常工作中最煩的一件事，你會讓它處理什麼？為什麼？</div>
+        <div class="fg"><textarea id="q12-text" placeholder="例如：每週的會議紀錄整理，因為..."></textarea></div>
+      </div>
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="prevSection()">← 上一部分</button>
+        <button class="btn btn-primary" onclick="nextSection()">下一部分 →</button>
+      </div>
+    </div>
+
+    <!-- Part 4: Communication -->
+    <div class="section card" data-section="3">
+      <div class="section-header">
+        <div class="section-num">Part 4 / 6</div>
+        <div class="section-title">溝通理解力</div>
+        <div class="section-desc">接收需求、表達想法和跨角色溝通的能力</div>
+      </div>
+      <div class="question">
+        <div class="q-label"><span class="q-num">Q13.</span> 工程師跟你說「這個功能要先打 API 拿資料再 render 到前端」，你聽不太懂。你會？</div>
+        <div class="options" data-q="q13">
+          <label class="option"><input type="radio" name="q13" value="0"> 點頭假裝聽懂</label>
+          <label class="option"><input type="radio" name="q13" value="2"> 請他用白話重新解釋一次</label>
+          <label class="option"><input type="radio" name="q13" value="3"> 用自己的理解複述一次，請他確認對不對</label>
+          <label class="option"><input type="radio" name="q13" value="1"> 回去自己 Google 那些名詞</label>
+        </div>
+      </div>
+      <div class="question">
+        <div class="q-label"><span class="q-num">Q14.</span> 你發現同事交出來的報告有一個明顯的錯誤數字。你會？</div>
+        <div class="options" data-q="q14">
+          <label class="option"><input type="radio" name="q14" value="0"> 不是我的事，不管</label>
+          <label class="option"><input type="radio" name="q14" value="1"> 在群組直接指出錯誤</label>
+          <label class="option"><input type="radio" name="q14" value="3"> 私下跟他說，順便附上正確的數字來源</label>
+          <label class="option"><input type="radio" name="q14" value="2"> 跟主管反映</label>
+        </div>
+      </div>
+      <div class="question">
+        <div class="q-label"><span class="q-num">Q15.</span> 你要把一個流程教給新進同事，你通常怎麼教？</div>
+        <div class="options" data-q="q15">
+          <label class="option"><input type="radio" name="q15" value="1"> 口頭講一遍</label>
+          <label class="option"><input type="radio" name="q15" value="2"> 做一次給他看，讓他跟著做</label>
+          <label class="option"><input type="radio" name="q15" value="3"> 寫一份簡單的步驟文件，搭配實際操作示範</label>
+          <label class="option"><input type="radio" name="q15" value="0"> 丟文件給他自己看</label>
+        </div>
+      </div>
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="prevSection()">← 上一部分</button>
+        <button class="btn btn-primary" onclick="nextSection()">下一部分 →</button>
+      </div>
+    </div>
+
+    <!-- Part 5: Digital Literacy -->
+    <div class="section card" data-section="4">
+      <div class="section-header">
+        <div class="section-num">Part 5 / 6</div>
+        <div class="section-title">數位素養</div>
+        <div class="section-desc">日常數位工具的使用能力和資訊判斷</div>
+      </div>
+      <div class="question">
+        <div class="q-label"><span class="q-num">Q16.</span> 以下哪些工具你「能獨立操作」？（選最接近的描述）</div>
+        <div class="options" data-q="q16">
+          <label class="option"><input type="radio" name="q16" value="0"> 基本文書（Word / Google Docs）</label>
+          <label class="option"><input type="radio" name="q16" value="1"> 文書 + 試算表基本操作（Excel / Sheets）</label>
+          <label class="option"><input type="radio" name="q16" value="2"> 以上都會 + 表單、簡報、雲端協作</label>
+          <label class="option"><input type="radio" name="q16" value="3"> 以上都會 + 能自己串工具自動化（例如 Zapier、Apps Script、Notion 資料庫）</label>
+        </div>
+      </div>
+      <div class="question">
+        <div class="q-label"><span class="q-num">Q17.</span> 你收到一封 Email 說你的帳號異常需要立即登入驗證，附了一個連結。你會？</div>
+        <div class="options" data-q="q17">
+          <label class="option"><input type="radio" name="q17" value="0"> 趕快點連結登入</label>
+          <label class="option"><input type="radio" name="q17" value="1"> 覺得怪怪的但不確定，先問同事</label>
+          <label class="option"><input type="radio" name="q17" value="3"> 不點連結，直接從官方網站或 App 確認帳號狀態</label>
+          <label class="option"><input type="radio" name="q17" value="2"> 忽略不理</label>
+        </div>
+      </div>
+      <div class="question">
+        <div class="q-label"><span class="q-num">Q18.</span> 你需要從一份 500 列的 Excel 中找出重複的客戶名稱，你會？</div>
+        <div class="options" data-q="q18">
+          <label class="option"><input type="radio" name="q18" value="0"> 一行一行用眼睛看</label>
+          <label class="option"><input type="radio" name="q18" value="1"> 用排序功能，讓相同名稱排在一起</label>
+          <label class="option"><input type="radio" name="q18" value="2"> 用條件格式標記重複值</label>
+          <label class="option"><input type="radio" name="q18" value="3"> 用 COUNTIF 或樞紐分析表，或者直接丟給 AI 處理</label>
+        </div>
+      </div>
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="prevSection()">← 上一部分</button>
+        <button class="btn btn-primary" onclick="nextSection()">下一部分 →</button>
+      </div>
+    </div>
+
+    <!-- Part 6: Drive & Resilience -->
+    <div class="section card" data-section="5">
+      <div class="section-header">
+        <div class="section-num">Part 6 / 6</div>
+        <div class="section-title">主動性與韌性</div>
+        <div class="section-desc">自驅力、抗壓性與持續進步的意願</div>
+      </div>
+      <div class="question">
+        <div class="q-label"><span class="q-num">Q19.</span> 你在工作中發現一個可以改善的流程，但沒有人要求你改。你會？</div>
+        <div class="options" data-q="q19">
+          <label class="option"><input type="radio" name="q19" value="0"> 照舊做，反正也不是我的責任</label>
+          <label class="option"><input type="radio" name="q19" value="1"> 心裡記著，如果有人問再提</label>
+          <label class="option"><input type="radio" name="q19" value="2"> 跟主管建議</label>
+          <label class="option"><input type="radio" name="q19" value="3"> 自己先試做一個改善方案，拿結果去提案</label>
+        </div>
+      </div>
+      <div class="question">
+        <div class="q-label"><span class="q-num">Q20.</span> 連續三天加班趕一個專案，結果客戶臨時改需求，之前的東西大部分白做了。你的反應是？</div>
+        <div class="options" data-q="q20">
+          <label class="option"><input type="radio" name="q20" value="0"> 非常崩潰，考慮離職</label>
+          <label class="option"><input type="radio" name="q20" value="1"> 很不爽，但還是會重做</label>
+          <label class="option"><input type="radio" name="q20" value="2"> 調整心態，先確認新需求再動手</label>
+          <label class="option"><input type="radio" name="q20" value="3"> 檢討這次為什麼會白做，想辦法讓下次不要重蹈覆轍</label>
+        </div>
+      </div>
+      <div class="question">
+        <div class="q-label"><span class="q-num">Q21.</span> 你願意每天花多少時間學習新的工作技能？</div>
+        <div class="slider-group">
+          <input type="range" min="0" max="120" value="30" step="10" id="q21-mins" oninput="document.getElementById('q21-val').textContent=this.value+'min'">
+          <span class="slider-val" id="q21-val">30min</span>
+        </div>
+        <div class="slider-labels"><span>0 分鐘</span><span>60 分鐘</span><span>120 分鐘</span></div>
+      </div>
+      <div class="question">
+        <div class="q-label"><span class="q-num">Q22.</span> 你希望一年後的自己，在工作上最大的改變是什麼？</div>
+        <div class="fg"><textarea id="q22-text" placeholder="自由填寫..."></textarea></div>
+      </div>
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="prevSection()">← 上一部分</button>
+        <button class="btn btn-submit" onclick="submitTest()">提交評測</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="results"></div>
+</div>
+
+<script>
+const SECTIONS = 6;
+const DIM_NAMES = ['學習適應力', '問題拆解力', 'AI 工具應用', '溝通理解力', '數位素養', '主動性與韌性'];
+const DIM_COLORS = ['#2563eb', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'];
+const DIM_QUESTIONS = [
+  ['q1','q2','q3','q4'],
+  ['q5','q6','q7'],
+  ['q9','q10','q11'],
+  ['q13','q14','q15'],
+  ['q16','q17','q18'],
+  ['q19','q20']
+];
+
+let currentSection = 0;
+
+function startTest() {
+  if (!document.getElementById('c-name').value.trim()) { alert('請輸入姓名'); return; }
+  document.getElementById('intro').classList.add('hidden');
+  document.getElementById('test-area').classList.remove('hidden');
+  updateProgress();
+}
+function updateProgress() {
+  const pct = ((currentSection + 1) / SECTIONS) * 100;
+  document.getElementById('progress').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = (currentSection + 1) + ' / ' + SECTIONS;
+}
+function showSection(idx) {
+  document.querySelectorAll('.section').forEach((s, i) => s.classList.toggle('active', i === idx));
+  currentSection = idx;
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function nextSection() { if (currentSection < SECTIONS - 1) showSection(currentSection + 1); }
+function prevSection() { if (currentSection > 0) showSection(currentSection - 1); }
+
+document.addEventListener('click', e => {
+  const opt = e.target.closest('.option');
+  if (!opt) return;
+  const radio = opt.querySelector('input[type="radio"]');
+  if (radio) radio.checked = true;
+  opt.closest('.options').querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  opt.classList.add('selected');
+});
+
+function getScore(name) {
+  const el = document.querySelector('input[name="' + name + '"]:checked');
+  return el ? parseInt(el.value) : 0;
+}
+
+function calcScores() {
+  const scores = [];
+  for (let d = 0; d < 6; d++) {
+    const qs = DIM_QUESTIONS[d];
+    let total = 0, max = qs.length * 3;
+    qs.forEach(q => { total += getScore(q); });
+    if (d === 1) { const t = document.getElementById('q8-text').value.trim(); total += Math.min(t.length / 40, 1) * 3; max += 3; }
+    if (d === 2) { const t = document.getElementById('q12-text').value.trim(); total += Math.min(t.length / 40, 1) * 3; max += 3; }
+    if (d === 5) {
+      const mins = parseInt(document.getElementById('q21-mins').value);
+      total += Math.min(mins / 60, 1) * 3; max += 3;
+      const t = document.getElementById('q22-text').value.trim();
+      total += Math.min(t.length / 30, 1) * 3; max += 3;
+    }
+    scores.push(Math.round((total / max) * 100));
+  }
+  return scores;
+}
+
+function submitTest() {
+  const scores = calcScores();
+  const overall = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+  const name = document.getElementById('c-name').value.trim();
+  const role = document.getElementById('c-role').value;
+  const bg = document.getElementById('c-bg').value;
+  const aiExp = document.getElementById('c-ai-exp').value;
+
+  document.getElementById('test-area').classList.add('hidden');
+  document.getElementById('results').style.display = 'block';
+
+  const v = getVerdict(overall);
+  const strengths = getTopDims(scores, true);
+  const weaknesses = getTopDims(scores, false);
+  const recs = getRecs(scores, overall, bg, aiExp);
+  const bd = getBigData(scores, overall, bg, aiExp);
+
+  document.getElementById('results').innerHTML = `
+    <div class="result-hero">
+      <div class="score-ring">
+        <svg width="150" height="150">
+          <circle cx="75" cy="75" r="65" fill="none" stroke="#f3f4f6" stroke-width="8"/>
+          <circle cx="75" cy="75" r="65" fill="none" stroke="${v.color}" stroke-width="8"
+            stroke-dasharray="${2*Math.PI*65}" stroke-dashoffset="${2*Math.PI*65*(1-overall/100)}" stroke-linecap="round"/>
+        </svg>
+        <div class="score-text">
+          <div class="score-num" style="color:${v.color}">${overall}</div>
+          <div class="score-label">綜合分數</div>
+        </div>
+      </div>
+      <div class="verdict" style="color:${v.color}">${v.label}</div>
+      <div class="verdict-desc">${v.desc}</div>
+      <div class="meta-line">${name} / ${role} / 背景：${bg} / AI 經驗：${aiExp}</div>
+    </div>
+
+    <div class="chart-card">
+      <h3>六維能力分析</h3>
+      <div class="dim-list">
+        ${scores.map((s, i) => `
+          <div class="dim-item">
+            <div class="dim-name">${DIM_NAMES[i]}</div>
+            <div class="dim-bar-bg"><div class="dim-bar-fill" style="width:${s}%;background:${DIM_COLORS[i]}"></div></div>
+            <div class="dim-score" style="color:${DIM_COLORS[i]}">${s}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="analysis-grid">
+      <div class="analysis-card">
+        <h3><span class="tag tag-green">強項</span> 核心優勢</h3>
+        <ul>${strengths.map(s => `<li>${DIM_NAMES[s.idx]} — ${s.comment}</li>`).join('')}</ul>
+      </div>
+      <div class="analysis-card">
+        <h3><span class="tag tag-yellow">待加強</span> 發展空間</h3>
+        <ul>${weaknesses.map(s => `<li>${DIM_NAMES[s.idx]} — ${s.comment}</li>`).join('')}</ul>
+      </div>
+    </div>
+
+    <div class="bigdata-panel">
+      <h3>大數據綜合分析</h3>
+      <div class="bigdata-stats">
+        <div class="bigdata-stat"><div class="val" style="color:${v.color}">${bd.percentile}%</div><div class="label">優於同類受測者</div></div>
+        <div class="bigdata-stat"><div class="val" style="color:#93c5fd">${bd.fitLabel}</div><div class="label">AI 協作適性</div></div>
+        <div class="bigdata-stat"><div class="val" style="color:#86efac">${bd.potential}</div><div class="label">成長潛力</div></div>
+      </div>
+      <div class="bigdata-insight">${bd.insights.map(t => '<p style="margin-bottom:6px">' + t + '</p>').join('')}</div>
+    </div>
+
+    <div class="rec-card">
+      <h3>個人化發展建議</h3>
+      ${recs.map(r => '<div class="rec-path ' + r.cls + '"><h4>' + r.title + '</h4><p>' + r.text + '</p></div>').join('')}
+    </div>
+
+    <div class="rec-card">
+      <h3>面試官備註區</h3>
+      <div class="fg"><textarea style="min-height:100px" placeholder="面試觀察、追加問題、最終決定..."></textarea></div>
+    </div>
+
+    <button class="print-btn" onclick="window.print()">列印報告</button>
+    <div class="footer-note">OBARAI INTELLIGENCE Co., Ltd. -- AI Collaborator Assessment v1.0<br>${new Date().toLocaleString('zh-TW')}</div>
+  `;
+}
+
+function getVerdict(s) {
+  if (s >= 80) return { label: '天生的 AI 協作者', desc: '學習力強、能拆解問題、懂得善用工具。即使沒有技術背景，在 AI 協作環境中也能快速上手並創造價值。', color: '#16a34a' };
+  if (s >= 60) return { label: '具備良好潛力', desc: '有不錯的基礎素養和學習意願，經過引導和實戰訓練後可以成為稱職的 AI 協作者。', color: '#2563eb' };
+  if (s >= 40) return { label: '需要系統性培訓', desc: '部分維度有發展空間，建議從基礎數位技能和 AI 工具操作開始，搭配 mentor 制度逐步成長。', color: '#ca8a04' };
+  return { label: '建議先從基礎開始', desc: '目前在多個維度的基礎較薄弱，建議先提升數位素養和基本工具能力，再進入 AI 協作的學習。', color: '#dc2626' };
+}
+
+function getTopDims(scores, isTop) {
+  const indexed = scores.map((s, i) => ({ score: s, idx: i }));
+  indexed.sort((a, b) => isTop ? b.score - a.score : a.score - b.score);
+  const top = indexed.slice(0, 2).filter(x => isTop ? x.score >= 40 : x.score < 85);
+  const comments = {
+    true: [
+      ['自學能力突出，能快速適應新環境', '有不錯的學習節奏'],
+      ['善於拆解問題，思路清晰', '有基本的問題分析能力'],
+      ['對 AI 工具的理解和應用超出預期', '開始掌握 AI 工具的使用方式'],
+      ['溝通清楚，能跨角色協調', '溝通方式得體'],
+      ['數位工具使用熟練', '基本數位操作沒問題'],
+      ['自驅力強，有持續進步的動力', '願意主動嘗試']
+    ],
+    false: [
+      ['學習主動性可以再提升，建議建立每日學習習慣', '可以嘗試更主動探索新工具'],
+      ['問題拆解能力需要練習，建議從小任務開始拆步驟', '遇到複雜任務時可以試著先列清單'],
+      ['建議多實際操作 AI 工具，從日常小任務開始', '可以花時間了解 AI 工具的特性和限制'],
+      ['可以練習「用自己的話複述」來確認理解是否正確', '嘗試主動確認需求而不是被動等待'],
+      ['基礎數位技能需加強，建議學習試算表和雲端工具', '可以多練習常用辦公工具的進階功能'],
+      ['嘗試在工作中主動提出改善建議，不用等人要求', '培養「遇到問題就想辦法」的習慣']
+    ]
+  };
+  return top.map(x => ({ idx: x.idx, comment: comments[isTop][x.idx][x.score >= 60 ? 0 : 1] }));
+}
+
+function getRecs(scores, overall, bg, aiExp) {
+  const recs = [];
+  if (overall >= 70) {
+    recs.push({ cls: 'rec-primary', title: '推薦路線：直接進入 AI 協作實戰', text: '你的綜合素質已經到位，建議直接參與 AI 輔助的專案工作。從用 AI 處理日常任務開始（寫信、整理資料、產出報告），逐步承擔更複雜的 AI 協作流程。' });
+  } else if (overall >= 45) {
+    recs.push({ cls: 'rec-primary', title: '推薦路線：引導式學習 + 實務練習', text: '建議先花 2-4 週完成 AI 工具的基礎訓練（每天 30 分鐘跟著做），搭配實際工作任務練習。有 mentor 帶會進步更快。' });
+  } else {
+    recs.push({ cls: 'rec-caution', title: '建議路線：先建立數位基礎', text: '建議先花 1-2 個月提升基本的數位工具能力（Google Workspace、試算表公式、雲端協作），建立穩固的基礎後再學習 AI 工具。' });
+  }
+  if (scores[2] < 50 && scores[0] >= 60) {
+    recs.push({ cls: 'rec-secondary', title: '學習力高但 AI 經驗不足', text: '你有很強的學習潛力，只是還沒接觸 AI 工具。建議：每天花 15 分鐘用 Claude 或 ChatGPT 處理一件日常工作（寫信、整理筆記、翻譯），一個月後會有明顯進步。' });
+  }
+  if (scores[1] >= 70) {
+    recs.push({ cls: 'rec-secondary', title: '問題拆解力是你的強項', text: '這是 AI 協作最核心的能力。會拆解問題的人，給 AI 的指令也會更精準，產出品質更高。建議往「AI Prompt 設計」方向發展，你會很有優勢。' });
+  }
+  if (aiExp === '從沒用過' && overall >= 50) {
+    recs.push({ cls: 'rec-secondary', title: '零經驗但底子好', text: '完全沒用過 AI 工具就能拿到這個分數，代表你的基礎素養很不錯。開始接觸 AI 之後進步空間會非常大。' });
+  }
+  return recs;
+}
+
+function getBigData(scores, overall, bg, aiExp) {
+  let pct = Math.min(Math.round(overall * 0.85 + (aiExp === '重度使用者' ? 10 : aiExp === '日常在用' ? 5 : 0)), 99);
+  if (overall < 30) pct = Math.max(pct, 5);
+  const fitLabels = ['低', '偏低', '中等', '中高', '高', '極高'];
+  const fitIdx = Math.min(Math.floor(overall / 18), 5);
+  const potLabels = ['需培養', '有潛力', '良好', '優秀', '頂尖'];
+  const potIdx = Math.min(Math.floor((scores[0] + scores[5]) / 50), 4);
+  const insights = [];
+
+  if (scores[0] >= 70 && scores[1] >= 60) {
+    insights.push('<strong>高效學習者特徵：</strong>學習力和問題拆解力雙高的人，在 AI 協作環境中的適應期通常只需要 1-2 週，遠低於平均的 4-6 週。');
+  }
+  if (scores[2] >= 70) {
+    insights.push('<strong>AI 原生思維：</strong>對 AI 工具的理解已超越「會用」的層次，懂得判斷 AI 的輸出品質並給予有效回饋，這是高階 AI 協作者的關鍵特質。');
+  }
+  if (scores[0] >= 60 && scores[2] < 40) {
+    insights.push('<strong>潛力尚未釋放：</strong>學習力不錯但 AI 工具經驗不足，屬於「還沒被點燃」的類型。一旦開始實際操作 AI，預估 2-4 週就能達到實用水準。');
+  }
+  if (scores[3] >= 70) {
+    insights.push('<strong>溝通型人才：</strong>在 AI 團隊中，能把需求翻譯成清楚指令的人比會寫程式的人更稀缺。這個特質在跨部門 AI 專案中特別有價值。');
+  }
+  if (scores[5] >= 70) {
+    insights.push('<strong>自驅力指標突出：</strong>數據顯示，主動性高的非技術人員在接觸 AI 後的半年成長幅度平均高出被動學習者 3 倍。');
+  }
+  if (bg === '完全外行' && overall >= 55) {
+    insights.push('<strong>零基礎高分：</strong>完全外行能達到此分數，顯示受測者的思維模式和學習態度遠比技術背景重要。這類人在正確引導下往往成長最快。');
+  }
+  const balanced = Math.max(...scores) - Math.min(...scores) < 20;
+  if (balanced && overall >= 50) {
+    insights.push('<strong>均衡發展型：</strong>各維度差異小且都有一定水準，適合擔任 AI 協作的「全能型」角色，能同時處理溝通、操作和品質把關。');
+  }
+  if (insights.length === 0) {
+    insights.push('<strong>建議完整作答：</strong>部分題目未充分作答，補充開放式題目的回答可以獲得更精確的分析結果。');
+  }
+  return { percentile: pct, fitLabel: fitLabels[fitIdx], potential: potLabels[potIdx], insights };
+}
+</script>
+</body>
+</html>
