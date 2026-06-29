@@ -30,6 +30,25 @@
 var ROOT_FOLDER_NAME = 'OBARAI-HR';
 var SHEET_NAME = 'HR紀錄';
 
+function doGet(e) {
+  var action = (e && e.parameter && e.parameter.action) || '';
+  if (action === 'analytics') {
+    var root = getOrCreateFolder(DriveApp.getRootFolder(), ROOT_FOLDER_NAME);
+    var name = 'ORBIT-Analytics';
+    var files = root.getFilesByName(name);
+    if (!files.hasNext()) return jsonResponse({ rows: [] });
+    var sheet = SpreadsheetApp.open(files.next()).getActiveSheet();
+    var last = sheet.getLastRow();
+    if (last <= 1) return jsonResponse({ rows: [] });
+    var data = sheet.getRange(2, 1, last - 1, 7).getValues();
+    var rows = data.map(function(r) {
+      return [r[0] instanceof Date ? r[0].toISOString() : String(r[0]), r[1], r[2], r[3], r[4], r[5], r[6]];
+    });
+    return jsonResponse({ rows: rows });
+  }
+  return jsonResponse({ error: 'unknown action' });
+}
+
 function doPost(e) {
   try {
     var data = JSON.parse(e.postData.contents);
@@ -39,6 +58,10 @@ function doPost(e) {
       return handleInterview(data, root);
     } else if (data.type === 'onboarding') {
       return handleOnboarding(data, root);
+    } else if (data.type === 'pageview') {
+      return handlePageview(data);
+    } else if (data.type === 'chatbot_funnel') {
+      return handleChatbotFunnel(data);
     }
 
     return jsonResponse({ success: false, error: '未知的表單類型' });
@@ -223,5 +246,64 @@ function today() {
 
 function jsonResponse(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}
+
+// ── Analytics ──
+
+function handlePageview(data) {
+  var ss = getOrCreateAnalyticsSheet();
+  ss.appendRow([
+    new Date(),
+    data.page || '/',
+    data.vid || '',
+    data.ref || '',
+    data.ua || '',
+    data.sw + 'x' + data.sh,
+    data.lang || ''
+  ]);
+  return jsonResponse({ success: true });
+}
+
+function handleChatbotFunnel(data) {
+  var ss = getOrCreateFunnelSheet();
+  ss.appendRow([
+    new Date(),
+    data.q1 || '',
+    data.q2 || '',
+    data.q3 || '',
+    data.name || '',
+    data.phone || '',
+    data.company || '',
+    data.source || ''
+  ]);
+  return jsonResponse({ success: true });
+}
+
+function getOrCreateAnalyticsSheet() {
+  var root = getOrCreateFolder(DriveApp.getRootFolder(), 'OBARAI-HR');
+  var name = 'ORBIT-Analytics';
+  var files = root.getFilesByName(name);
+  if (files.hasNext()) return SpreadsheetApp.open(files.next()).getActiveSheet();
+  var ss = SpreadsheetApp.create(name);
+  var sheet = ss.getActiveSheet();
+  sheet.appendRow(['時間', '頁面', '訪客ID', '來源', 'UserAgent', '螢幕', '語言']);
+  sheet.getRange(1, 1, 1, 7).setFontWeight('bold').setBackground('#f3f4f6');
+  sheet.setFrozenRows(1);
+  DriveApp.getFileById(ss.getId()).moveTo(root);
+  return sheet;
+}
+
+function getOrCreateFunnelSheet() {
+  var root = getOrCreateFolder(DriveApp.getRootFolder(), 'OBARAI-HR');
+  var name = 'ORBIT-Leads';
+  var files = root.getFilesByName(name);
+  if (files.hasNext()) return SpreadsheetApp.open(files.next()).getActiveSheet();
+  var ss = SpreadsheetApp.create(name);
+  var sheet = ss.getActiveSheet();
+  sheet.appendRow(['時間', '想了解什麼', '行業/規模', '需要什麼', '姓名', '電話', '公司', '來源']);
+  sheet.getRange(1, 1, 1, 8).setFontWeight('bold').setBackground('#f3f4f6');
+  sheet.setFrozenRows(1);
+  DriveApp.getFileById(ss.getId()).moveTo(root);
+  return sheet;
 }
 
